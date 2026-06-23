@@ -1,0 +1,160 @@
+ 
+/* Copyright 2026 Ross Shkurat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ web_socket: package exports(accept, socket, listen, bind, connect, 
+    close, send, receive);
+
+ %include type_defs;
+
+   dcl c_shutdown entry (socket_fd_t, shut_how_t) 
+     returns (fixed bin(31))
+     options(linkage(system)) external('shutdown');
+
+ shutdown: proc(socket_fd, how) returns(fixed bin(31));
+   dcl socket_fd socket_fd_t;
+   dcl how shut_how_t;
+   
+   return(c_shutdown(socket_fd, how));
+ end shutdown;
+
+   dcl c_accept entry (socket_fd_t) returns (socket_fd_t)
+     options(linkage(system)) external('default_accept');
+
+ accept: proc(socket_fd) returns(socket_fd_t);
+   dcl socket_fd socket_fd_t;
+   return(c_accept(socket_fd));
+ end accept;
+
+   dcl c_socket entry () returns (socket_fd_t)
+     options(linkage(system)) external('default_socket');
+
+ socket: proc() returns(socket_fd_t);
+   return(c_socket());
+ end socket;
+
+   dcl c_listen entry (
+     socket_fd_t,
+     backlog_t
+   ) returns (fixed bin(31))
+     options(linkage(system)) external('listen');
+
+ listen: proc(socket_fd, backlog) returns(fixed bin(31));
+   dcl socket_fd socket_fd_t;
+   dcl backlog backlog_t;
+   dcl status fixed bin(31);
+
+   status = c_listen(socket_fd, backlog);
+
+   return(status);
+ end listen;
+
+   dcl c_bind entry (
+     socket_fd_t,
+     port_t
+   ) returns (fixed bin(31)) 
+     options(linkage(system)) external('bind_to_port');
+
+ bind: proc(sock_fd, port) returns (fixed bin(31));
+   dcl sock_fd socket_fd_t;
+   dcl port port_t;
+   dcl status fixed bin(31);
+
+   status = c_bind(sock_fd, port);
+
+   return(status);
+ end bind;
+
+   dcl c_connect entry (
+     pointer,    /* host */
+     port_t      /* port */
+   ) returns(socket_fd_t)  /* socket descriptor */
+     options(linkage(system)) external('connect_to_host');
+
+ connect: proc(host, port) returns(socket_fd_t);
+   dcl host char(*) varying;
+   dcl port port_t;
+   dcl sock_fd socket_fd_t;
+
+   dcl c_host char(length(host));
+   c_host = substr(host, 1, length(host)) || '00'x;
+
+   sock_fd = c_connect(addr(c_host), port);
+
+   return(sock_fd);
+ end connect;
+
+   dcl c_send entry (
+       socket_fd_t,  /* socket descriptor */
+       pointer,      /* request */
+       size_t,       /* length */
+       flags_t       /* flags */
+   ) returns(size_t)  /* num of bytes sent */
+     options(linkage(system)) external('send');
+
+  send: proc(sock_fd, request, flags) returns(size_t);
+    dcl sock_fd socket_fd_t;
+    dcl request char(*) varying;
+    dcl flags flags_t;
+    dcl total_sent size_t init(0);
+    dcl n size_t;
+    dcl len fixed bin(31);
+    dcl data char(length(request));
+
+    data = request;
+    len = length(request);
+
+    do while(total_sent < len);
+      n = c_send(sock_fd, addr(data) + total_sent,
+                 len - total_sent, flags);
+      if n <= 0 then
+        leave;
+      total_sent = total_sent + n;
+    end;
+    return(total_sent);
+  end send;
+ 
+   dcl c_recv entry (
+       socket_fd_t,  /* socket descriptor */
+       pointer,     /* buffer */
+       size_t,       /* length */
+       flags_t       /* flags */
+   ) returns(size_t)  /* num of bytes received */
+     options(linkage(system)) external('recv');
+
+  receive: proc(sock_fd, response, flags) returns(size_t);
+    dcl sock_fd  socket_fd_t;
+    dcl response char(*);
+    dcl flags    flags_t;
+    dcl n        fixed bin(31);
+
+    n = c_recv(sock_fd, addr(response), length(response), flags);
+    if n > 0 then
+      response = substr(response, 1, n);
+    return(n);
+  end receive;
+
+   dcl c_close entry (
+       socket_fd_t  /* socket descriptor */
+   ) returns(fixed bin(31))  /* error code */
+     options(linkage(system)) external('close');
+
+ close: proc(sock_fd) returns(fixed bin(31));
+   dcl sock_fd socket_fd_t;
+   return(c_close(sock_fd));
+ end close;
+
+ end web_socket;

@@ -1,0 +1,106 @@
+ /* Copyright 2026 Ross Shkurat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+socket: package exports(new_connect, socket_send, socket_receive, 
+   close_socket, shutdown_socket, socket_errno);
+
+ %include web_socket;
+ %include socket_errors;
+
+ new_connect: proc(sock, h, p) returns(size_t);
+   dcl sock like socket_t;
+   dcl h char(*) varying;
+   dcl p port_t;
+
+   sock.fd = connect(h, p);
+   if sock.fd < 0 then
+     do;
+       signal condition(socket_error);
+       return(sock.fd);
+     end;
+   sock.host = h;
+   sock.port = p; 
+   sock.connected = '1'b; 
+   
+   return(0);
+ end new_connect;
+
+ socket_send: proc(sock, request, flags) returns(size_t);
+   dcl sock like socket_t;
+   dcl request char(*) varying;
+   dcl flags flags_t;
+
+   dcl bytes_sent fixed bin(31) init(0);
+
+   bytes_sent = send(sock.fd, request, flags);
+   if bytes_sent < 0 then
+     do;
+       signal condition(socket_error);
+       return(bytes_sent);
+     end;
+   return(bytes_sent);
+ end socket_send;
+
+ socket_receive: proc(sock, response, flags) returns(size_t);
+   dcl sock like socket_t;
+   dcl response char(*);   
+   dcl flags flags_t;
+
+   dcl bytes_received fixed bin(31) init(0);
+
+   bytes_received = receive(sock.fd, response, flags);
+   if bytes_received < 0 then
+     do;
+       signal condition(socket_error);
+       return(bytes_received);
+     end;
+   return(bytes_received);
+ end socket_receive; 
+
+ close_socket: proc(sock) returns(fixed bin(31));
+   dcl sock like socket_t;
+
+   dcl err_code fixed bin(31) init(0);
+
+   err_code = close(sock.fd);
+   if err_code < 0 then
+     do;
+       signal condition(socket_error);
+       return(err_code);
+     end;
+   return(err_code);
+ end close_socket;
+
+ shutdown_socket: proc(sock, how) returns(fixed bin(31));
+   dcl sock like socket_t;
+   dcl how shut_how_t;
+   dcl err fixed bin(31);
+
+   err = shutdown(sock.fd, how);
+   if err < 0 then
+     do;
+       signal condition(socket_error);
+       return(err);
+     end;
+   return(err);
+ end shutdown_socket;
+
+ socket_errno: proc(sock) returns(fixed bin(31));
+   dcl sock like socket_t;
+   return(get_errno());
+ end socket_errno;
+
+ end socket;

@@ -1,0 +1,77 @@
+ 
+ /* Copyright 2026 Ross Shkurat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+server_socket: package exports(create_server, server_accept, 
+   server_error);
+
+ %include web_socket;
+ %include socket_errors;
+
+ create_server: proc(sock, port, backlog) returns(fixed bin(31));
+   dcl sock    like socket_t;
+   dcl port    port_t;
+   dcl backlog backlog_t;
+
+   sock.fd = socket();
+   if sock.fd < 0 then
+     do;
+       signal condition(socket_error);
+       return(-1);
+     end;
+
+   if bind(sock.fd, port) < 0 then
+     do;
+       signal condition(socket_error);
+       return(-1);
+     end;
+
+   if listen(sock.fd, backlog) < 0 then
+     do;
+       signal condition(socket_error);
+       return(-1);
+     end;
+
+   sock.port = port;
+   sock.connected = '1'b;
+
+   return(0);
+ end create_server;
+
+ server_accept: proc(server, client) returns(fixed bin(31));
+   dcl server like socket_t;
+   dcl client like socket_t;
+   dcl client_fd socket_fd_t;
+
+   client_fd = accept(server.fd);
+   if client_fd < 0 then
+     do;
+       signal condition(socket_error);
+       return(-1);
+     end;
+
+   client.fd = client_fd;
+   client.connected = '1'b;
+
+   return(0);
+ end server_accept;
+
+ server_error: proc(sock) returns(fixed bin(31));
+   dcl sock like socket_t;
+   return(get_errno());
+ end server_error;
+
+ end server_socket;

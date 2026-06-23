@@ -1,0 +1,33 @@
+
+/* Copyright 2026 Ross Shkurat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ %include socket;
+
+ dcl create_server entry (
+   like socket_t,
+   port_t,
+   backlog_t
+ ) returns(fixed bin(31));
+
+ dcl server_accept entry (
+   like socket_t,
+   like socket_t
+ ) returns(fixed bin(31));
+
+ dcl server_error entry (
+   like socket_t
+ ) returns(fixed bin(31));
