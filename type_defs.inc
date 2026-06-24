@@ -27,8 +27,8 @@
  %replace LINE_END by "'0D0A'x";
 
  dcl 1 socket_t,
-      2 fd        socket_fd_t,
-      2 host      char(256) init(''),
-      2 port      port_t init(0),
-      2 connected bit(1) init('0'b);
+      2 _fd        socket_fd_t,
+      2 _host      char(256) init(''),
+      2 _port      port_t init(0),
+      2 _connected bit(1) init('0'b);
  

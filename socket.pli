@@ -21,20 +21,20 @@
 
  dcl socket_error condition;
 
- new_connect: proc(sock, h, p) returns(size_t);
+ new_connect: proc(sock, host, port) returns(size_t);
    dcl sock like socket_t;
-   dcl h char(*) varying;
-   dcl p port_t;
+   dcl host char(*) varying;
+   dcl port port_t;
 
-   sock.fd = connect(h, p);
-   if sock.fd < 0 then
+   sock._fd = connect(host, port);
+   if sock._fd < 0 then
      do;
        signal condition(socket_error);
-       return(sock.fd);
+       return(sock._fd);
      end;
-   sock.host = h;
-   sock.port = p; 
-   sock.connected = '1'b; 
+   sock._host = host;
+   sock._port = port; 
+   sock._connected = '1'b; 
    
    return(0);
  end new_connect;
@@ -51,7 +51,7 @@
    slice = request;
 
    do while(bytes_sent < length(request));
-     n = send(sock.fd, addr(slice) + bytes_sent,
+     n = send(sock._fd, addr(slice) + bytes_sent,
                  length(request) - bytes_sent, flags);
      if n <= 0 then leave;
      bytes_sent = bytes_sent + n;
@@ -72,7 +72,7 @@
 
    dcl bytes_received fixed bin(31) init(0);
 
-   bytes_received = receive(sock.fd, addr(response), 
+   bytes_received = receive(sock._fd, addr(response), 
       length(response), flags);
    if bytes_received < 0 then
      do;
@@ -89,7 +89,7 @@
 
    dcl err_code fixed bin(31) init(0);
 
-   err_code = close(sock.fd);
+   err_code = close(sock._fd);
    if err_code < 0 then
      do;
        signal condition(socket_error);
@@ -103,7 +103,7 @@
    dcl how shut_how_t;
    dcl err fixed bin(31);
 
-   err = shutdown(sock.fd, how);
+   err = shutdown(sock._fd, how);
    if err < 0 then
      do;
        signal condition(socket_error);

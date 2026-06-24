@@ -26,7 +26,7 @@ server_socket: package exports(create_server, server_accept,
    dcl port    port_t;
    dcl backlog backlog_t;
 
-   sock.fd = socket();
+   sock._fd = socket();
    if sock.fd < 0 then
      do;
        signal condition(socket_error);
@@ -39,13 +39,13 @@ server_socket: package exports(create_server, server_accept,
        return(-1);
      end;
 
-   if listen(sock.fd, backlog) < 0 then
+   if listen(sock._fd, backlog) < 0 then
      do;
        signal condition(socket_error);
        return(-1);
      end;
 
-   sock.port = port;
+   sock._port = port;
    sock.connected = '1'b;
 
    return(0);
@@ -56,14 +56,14 @@ server_socket: package exports(create_server, server_accept,
    dcl client like socket_t;
    dcl client_fd socket_fd_t;
 
-   client_fd = accept(server.fd);
+   client_fd = accept(server._fd);
    if client_fd < 0 then
      do;
        signal condition(socket_error);
        return(-1);
      end;
 
-   client.fd = client_fd;
+   client._fd = client_fd;
    client.connected = '1'b;
 
    return(0);
