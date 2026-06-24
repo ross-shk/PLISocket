@@ -1,1 +1,3 @@
+.gitignore
 examples/.DS_Store
+examples/client_server
