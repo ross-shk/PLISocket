@@ -11,7 +11,7 @@ A socket library for PL/I with a C bridge, object-oriented wrappers, and PL/I co
 | `socket.pli` / `.inc` | Object-oriented client socket methods (`sock_connect`, `socket_send`, `socket_receive`, `close_socket`, `shutdown_socket`, `socket_errno`) |
 | `server_socket.pli` / `.inc` | Server socket methods (`create_server`, `server_accept`, `server_error`) |
 | `socket_errors.inc` | `socket_error` condition and `get_errno` entry |
-| `web_socket_lib.c` | C bridge: `default_socket`, `default_accept`, `bind_to_port`, `connect_to_host`, `get_errno_value` |
+| `web_socket_lib.c` | C bridge:, `default_accept`, `bind_to_port`, `connect_to_host`, `get_errno_value` |
 
 ## Usage
 

@@ -36,10 +36,6 @@ int default_accept(int server_fd) {
   return client_fd;
 }
 
-int default_socket() {
-  return socket(AF_INET, SOCK_STREAM, 0);
-}
-
 int bind_to_port(int socket_fd, int port) {
   struct sockaddr_in addr;
 
