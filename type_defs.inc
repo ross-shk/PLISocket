@@ -33,6 +33,7 @@
       2 _connected bit(1) init('0'b),
       2 _family    fixed bin(31),
       2 _type      fixed bin(31),
+      2 _flag      fixed bin(31),
       2 _address,
        3 s_address fixed bin(31);
  

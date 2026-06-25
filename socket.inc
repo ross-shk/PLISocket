@@ -17,6 +17,12 @@
 
  %include type_defs;
  %include socket_errors;
+
+ dcl new_socket entry (
+   like socket_t, 
+   fixed bin(31), 
+   fixed bin(31), 
+   fixed bin(31));
  
  dcl new_connect entry (
    like socket_t,
