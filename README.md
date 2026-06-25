@@ -28,7 +28,7 @@ A socket library for PL/I with a C bridge, object-oriented wrappers, and PL/I co
        'Host: 127.0.0.1:' || '8080' || LINE_END ||
        'Connection: close' || LINE_END || LINE_END;
    
-   call new_socket(sock, 2, 1, 0); /* AF_INET, SOCK_STREAM */
+   call new_socket(sock, AF.INET, TYPE.STREAM, 0); 
    call sock_connect(sock, '127.0.0.1', 8080);
    bytes = socket_send(sock, request, 0);
    bytes = socket_receive(sock, response, 0);

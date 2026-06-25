@@ -26,14 +26,25 @@
 
  %replace LINE_END by "'0D0A'x";
 
+ dcl 1 AF static,
+       2 UNSPEC fixed bin(31) init(0),
+       2 UNIX   fixed bin(31) init(1),
+       2 INET   fixed bin(31) init(2),
+       2 INET6  fixed bin(31) init(10);
+
+ dcl 1 TYPE static,
+       2 STREAM fixed bin(31) init(1),
+       2 DGRAM  fixed bin(31) init(2),
+       2 RAW    fixed bin(31) init(3);
+
  dcl 1 socket_t based,
-      2 _fd        socket_fd_t,
-      2 _host      char(256) init(''),
-      2 _port      port_t init(0),
-      2 _connected bit(1) init('0'b),
-      2 _family    fixed bin(31),
-      2 _type      fixed bin(31),
-      2 _flag      fixed bin(31),
-      2 _address,
-       3 s_address fixed bin(31);
+       2 _fd        socket_fd_t,
+       2 _host      char(256) init(''),
+       2 _port      port_t init(0),
+       2 _connected bit(1) init('0'b),
+       2 _family    fixed bin(31),
+       2 _type      fixed bin(31),
+       2 _flag      fixed bin(31),
+       2 _address,
+         3 s_address fixed bin(31);
  

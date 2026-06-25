@@ -33,7 +33,7 @@
        'Connection: close' || LINE_END || LINE_END;
    put skip list("REQUEST: " || LINE_END, trim(char(request)));
    
-   call new_socket(sock, 2, 1, 0); /* AF_INET, SOCK_STREAM */
+   call new_socket(sock, AF.INET, TYPE.STREAM, 0);
    call sock_connect(sock, host, port);
    put skip list("       CONNECTED...");
 
