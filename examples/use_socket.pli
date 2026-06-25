@@ -32,8 +32,9 @@
        'Host: ' || trim(host) || ":" || trim(port) || LINE_END ||
        'Connection: close' || LINE_END || LINE_END;
    put skip list("REQUEST: " || LINE_END, trim(char(request)));
- 
-   call new_connect(sock, host, port);
+   
+   call new_socket(sock, 2, 1, 0); /* AF_INET, SOCK_STREAM */
+   call sock_connect(sock, host, port);
    put skip list("       CONNECTED...");
 
    bytes_sent = socket_send(sock, request, 0);

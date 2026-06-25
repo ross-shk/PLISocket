@@ -8,7 +8,7 @@ A socket library for PL/I with a C bridge, object-oriented wrappers, and PL/I co
 |------|---------|
 | `type_defs.inc` | Named types (`socket_fd_t`, `port_t`, `buffer_t`, etc.) and the `socket_t` structure |
 | `web_socket.pli` / `.inc` | Thin wrappers around POSIX socket C functions |
-| `socket.pli` / `.inc` | Object-oriented client socket methods (`new_connect`, `socket_send`, `socket_receive`, `close_socket`, `shutdown_socket`, `socket_errno`) |
+| `socket.pli` / `.inc` | Object-oriented client socket methods (`sock_connect`, `socket_send`, `socket_receive`, `close_socket`, `shutdown_socket`, `socket_errno`) |
 | `server_socket.pli` / `.inc` | Server socket methods (`create_server`, `server_accept`, `server_error`) |
 | `socket_errors.inc` | `socket_error` condition and `get_errno` entry |
 | `web_socket_lib.c` | C bridge: `default_socket`, `default_accept`, `bind_to_port`, `connect_to_host`, `get_errno_value` |
@@ -27,8 +27,9 @@ A socket library for PL/I with a C bridge, object-oriented wrappers, and PL/I co
        'GET / HTTP/1.1' || LINE_END ||
        'Host: 127.0.0.1:' || '8080' || LINE_END ||
        'Connection: close' || LINE_END || LINE_END;
- 
-   call new_connect(sock, '127.0.0.1', 8080);
+   
+   call new_socket(sock, 2, 1, 0); /* AF_INET, SOCK_STREAM */
+   call sock_connect(sock, '127.0.0.1', 8080);
    bytes = socket_send(sock, request, 0);
    bytes = socket_receive(sock, response, 0);
 

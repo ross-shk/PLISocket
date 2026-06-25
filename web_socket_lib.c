@@ -55,21 +55,11 @@ int get_errno_value(void) {
   return errno;
 }
 
-int connect_to_host(char *host, int port) {
-  int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-  if (socket_fd < 0) { return 1; }
-
+int connect_to_host(char *host, int port, int socket_fd) {
   struct sockaddr_in addr = {0};
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
   inet_pton(AF_INET, host, &addr.sin_addr);
 
-  if (connect(socket_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-      printf("Connection refused\n");
-      close(socket_fd);
-      return 1;
-  } else {
-      printf("Connection success\n");
-  }
-  return socket_fd;
+  return connect(socket_fd, (struct sockaddr*)&addr, sizeof(addr)) ;
 }

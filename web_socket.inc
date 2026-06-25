@@ -49,11 +49,13 @@
    port_t        /* port */
  ) returns (fixed bin(31))  /* status */
    options(linkage(system)) external('bind_to_port');
-
+ 
  dcl connect entry (
-   char(*) varying,  /* host */
-   port_t            /* port */
- ) returns(socket_fd_t);  /* socket descriptor */
+   pointer,     /* host */
+   port_t,      /* port */
+   socket_fd_t  /* socket file descriptor */
+ ) returns(fixed bin(31))  /* socket descriptor */
+   options(linkage(system)) external('connect_to_host');
 
  dcl send entry (
    socket_fd_t,  /* socket descriptor */

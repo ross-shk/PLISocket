@@ -24,11 +24,11 @@
    fixed bin(31), 
    fixed bin(31));
  
- dcl new_connect entry (
+ dcl sock_connect entry (
    like socket_t,
    char(*) varying,
    port_t
- ) returns(size_t);
+ );
 
  dcl socket_send entry (
    like socket_t,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- socket: package exports(new_connect, socket_send, socket_receive, 
+ socket: package exports(sock_connect, socket_send, socket_receive, 
    close_socket, shutdown_socket, socket_errno, new_socket);
 
  %include web_socket;
@@ -36,23 +36,26 @@
    sock._flag = flag;
  end new_socket;
 
- new_connect: proc(sock, host, port) returns(size_t);
+ sock_connect: proc(sock, host, port);
    dcl sock like socket_t;
    dcl host char(*) varying;
    dcl port port_t;
+   
+   dcl status fixed bin(31);
 
-   sock._fd = connect(host, port);
-   if sock._fd < 0 then
+   dcl c_host char(length(host));
+   c_host = substr(host, 1, length(host)) || '00'x;
+
+   status = connect(addr(c_host), port, sock._fd);
+   if status < 0 then
      do;
        signal condition(socket_error);
-       return(sock._fd);
+       return;
      end;
    sock._host = host;
    sock._port = port; 
    sock._connected = '1'b; 
-   
-   return(0);
- end new_connect;
+ end sock_connect;
 
  socket_send: proc(sock, request, flags) returns(size_t);
    dcl sock like socket_t;
