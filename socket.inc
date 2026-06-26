@@ -35,11 +35,21 @@
    char(*) varying,
    flags_t
  ) returns(size_t);
+
+ dcl socket_write entry (
+   like socket_t,
+   char(*) varying
+ ) returns(size_t);
  
  dcl socket_receive entry (
    like socket_t,
    char(*),  
    flags_t
+ ) returns(size_t);
+
+ dcl socket_read entry (
+   like socket_t,
+   char(*)
  ) returns(size_t);
 
  dcl close_socket entry (

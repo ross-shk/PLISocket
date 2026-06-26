@@ -74,7 +74,21 @@
  ) returns(size_t)  /* num of bytes received  */
    options(linkage(system)) external('recv');
 
- dcl close entry (
-   socket_fd_t  /* socket descriptor */
- ) returns(fixed bin(31))  /* error code */
-   options(linkage(system)) external('close');
+ dcl read entry (
+   socket_fd_t,  /* socket descriptor */
+   pointer,      /* buffer */
+   size_t        /* length */
+ ) returns(size_t)  /* num of bytes read */
+   options(linkage(system)) external('read');
+
+ dcl write entry (
+   socket_fd_t,  /* socket descriptor */
+   pointer,      /* buffer */
+   size_t        /* length */
+ ) returns(size_t)  /* num of bytes written */
+   options(linkage(system)) external('write');
+
+  dcl close entry (
+    socket_fd_t  /* socket descriptor */
+  ) returns(fixed bin(31))  /* error code */
+    options(linkage(system)) external('close');
