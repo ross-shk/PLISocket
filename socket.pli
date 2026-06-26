@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- socket: package exports(sock_connect, socket_send, socket_receive,
+ socket: package exports(socket_connect, socket_send, socket_receive,
    socket_read, socket_write, close_socket, shutdown_socket, 
    new_socket);
 
@@ -36,7 +36,7 @@
    sock._flag = flag;
  end new_socket;
 
- sock_connect: proc(sock, host, port);
+ socket_connect: proc(sock, host, port);
    dcl sock like socket_t;
    dcl host char(*) varying;
    dcl port port_t;
@@ -56,7 +56,7 @@
    sock._host = host;
    sock._port = port; 
    sock._connected = '1'b; 
- end sock_connect;
+ end socket_connect;
 
  socket_send: proc(sock, request, flags) returns(size_t);
    dcl sock like socket_t;

@@ -24,7 +24,7 @@
    fixed bin(31), 
    fixed bin(31));
  
- dcl sock_connect entry (
+ dcl socket_connect entry (
    like socket_t,
    char(*) varying,
    port_t

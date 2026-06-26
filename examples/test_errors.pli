@@ -38,7 +38,7 @@
    put skip list('Attempting connection to', trim(host), ':', port);
 
    call new_socket(sock, AF.INET, TYPE.STREAM, 0); 
-   call sock_connect(sock, host, port);
+   call socket_connect(sock, host, port);
    put skip list('Connected');
 
    bytes = socket_send(sock, request, 0);
