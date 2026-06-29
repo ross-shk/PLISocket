@@ -16,7 +16,6 @@
  */
 
  %include type_defs;
- %include socket_errors;
 
  dcl new_socket entry (
    like socket_t, 

@@ -19,8 +19,7 @@
    new_socket);
 
  %include web_socket;
-
- dcl socket_error condition;
+ %include socket_errors;
 
  new_socket: proc(sock, family, type, flag);
    dcl sock like socket_t;

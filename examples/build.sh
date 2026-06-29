@@ -31,15 +31,14 @@ fi
 
 SOURCE="$1"
 OUTPUT="${2:-$(basename "$SOURCE" .pli)}"
-INCDIR="-i.."
+INCDIR="-i../include"
 
 echo "=== Building C bridge ==="
-gcc -m32 -c ../web_socket_lib.c -o web_socket_lib.o
+gcc -m32 -c ../source/web_socket_lib.c -o web_socket_lib.o
 
 echo "=== Compiling library packages ==="
-plic -C -dELF -ew -O ../web_socket.pli  $INCDIR -o web_socket.o
-plic -C -dELF -ew -O ../socket.pli      $INCDIR -o socket.o
-# plic -C -dELF -ew -O ../server_socket.pli $INCDIR -o server_socket.o
+plic -C -dELF -ew -O ../source/socket.pli      $INCDIR -o socket.o
+# plic -C -dELF -ew -O ../source/server_socket.pli $INCDIR -o server_socket.o
 
 echo "=== Compiling $SOURCE ==="
 plic -C -dELF -ew -O "$SOURCE" $INCDIR -o "${OUTPUT}.o"
