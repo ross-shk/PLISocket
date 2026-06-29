@@ -1,0 +1,62 @@
+ main: proc options(main);
+ %include server_socket;
+
+   dcl server    like socket_t;
+   dcl client    like socket_t;
+   dcl port      port_t init(8090);
+   dcl backlog   backlog_t init(5);
+   dcl buffer    char(4096);
+   dcl message   char(256) varying;
+   dcl bytes     size_t;
+
+   on attention begin;
+     call close_socket(server);
+     call close_socket(client);
+     goto done;
+   end;
+
+   on condition(socket_error) begin;
+     put skip list('Socket error, errno =', oncode());
+     goto done;
+   end;
+   
+    /* create socket */
+    call new_socket(server, AF.INET, TYPE.STREAM, 0);
+
+    /* bind and listen */
+    call create_server(server, port, backlog);
+
+   put skip list('Server listening on port', port);
+
+   /* accept one client */
+   call server_accept(server, client);
+
+   put skip list('Client connected');
+
+   /* read what the client sent */
+   bytes = socket_receive(client, buffer, 0);
+   if bytes < 0 then do;
+     put skip list('socket_read failed');
+     stop;
+   end;
+
+   if bytes > 0 then do;
+     message = substr(buffer, 1, bytes);
+     put skip list('Received:', message);
+
+     /* echo it back */
+     bytes = socket_write(client, message);
+     if bytes < 0 then do;
+       put skip list('socket_write failed');
+       stop;
+     end;
+
+     put skip list('Echoed back');
+   end;
+
+   call close_socket(client);
+   call close_socket(server);
+
+ done:
+   put skip list('Server shut down');
+ end main;

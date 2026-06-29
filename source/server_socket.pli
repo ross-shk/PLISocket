@@ -35,6 +35,7 @@
      return;
    end;
 
+   sock._port = port;
    sock._connected = '1'b;
  end create_server;
 
