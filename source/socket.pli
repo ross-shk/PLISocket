@@ -16,7 +16,7 @@
 
  socket: package exports(socket_connect, socket_send, socket_receive,
    socket_read, socket_write, close_socket, shutdown_socket, 
-   new_socket);
+   new_socket, socket_resolve);
 
  %include socket_bridge;
  %include socket_errors;
@@ -174,5 +174,32 @@
    end;
    return(err);
  end shutdown_socket;
+
+ socket_resolve: proc(sock, hostname);
+   dcl sock like socket_t;
+   dcl hostname char(*) varying;
+
+   dcl ip_buf char(64) init((64)'00'x);
+   dcl c_host char(257);
+   dcl rc fixed bin(31);
+   dcl null_pos fixed bin(31);
+   dcl fam fixed bin(31);
+
+   fam = sock._family;
+   c_host = substr(hostname, 1, length(hostname)) || '00'x;
+   rc = resolve_hostname(addr(c_host), fam,
+        addr(ip_buf), length(ip_buf));
+
+   if rc < 0 then do;
+     signal condition(socket_error) set oncode(get_errno());
+     return;
+   end;
+
+   null_pos = index(ip_buf, '00'x);
+   if null_pos = 0 then
+     null_pos = length(ip_buf) + 1;
+
+   sock._host = substr(ip_buf, 1, null_pos - 1);
+ end socket_resolve;
 
  end socket;
