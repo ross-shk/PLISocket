@@ -37,6 +37,10 @@
        2 DGRAM  fixed bin(31) init(2),
        2 RAW    fixed bin(31) init(3);
 
+ dcl 1 INADDR static,
+       2 ANY       fixed bin(31) init(0),
+       2 BROADCAST fixed bin(31) init(-1);
+
  dcl 1 socket_t aligned based,
        2 _fd        socket_fd_t,
        2 _host      char(256) init(''),
@@ -45,6 +49,5 @@
        2 _family    fixed bin(31),
        2 _type      fixed bin(31),
        2 _flag      fixed bin(31),
-       2 _address,
-         3 s_address fixed bin(31);
+       2 _in_addr   fixed bin(31);
  
