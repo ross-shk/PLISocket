@@ -21,13 +21,9 @@
    like socket_t,
    port_t,
    backlog_t
- ) returns(fixed bin(31));
+ );
 
  dcl server_accept entry (
    like socket_t,
    like socket_t
- ) returns(fixed bin(31));
-
- dcl server_error entry (
-   like socket_t
- ) returns(fixed bin(31));
+ );
