@@ -57,12 +57,18 @@
    conn._connected = '1'b;
  end netconnect;
 
- netdial: proc(conn, host, port);
+ netdial: proc(conn, url, family, type);
    dcl conn like conncb;
-   dcl host char(*) varying;
+   dcl url char(*) varying;
+   dcl family fixed bin(31);
+   dcl type fixed bin(31);
+   
+   dcl host char(256) varying;
    dcl port port_t;
+   call split_url;
 
-   if is_hostname(host) then call netresolve(conn, host);
+   call netnew(conn, family, type, 0);
+   if is_hostname then call netresolve(conn, host);
 
    begin;
      dcl status fixed bin(31);
@@ -80,13 +86,26 @@
    conn._host = host;
    conn._port = port;
    conn._connected = '1'b;
+   
+   split_url: proc;
+     dcl pos fixed bin(31);
 
-   is_hostname: proc(host) returns(bit(1));
-     dcl host char(*) varying;
+     pos = index(url, ':');
+
+     if pos = 0 then do;
+         host = url;
+         port = '';
+     end;
+     else do;
+         host = substr(url, 1, pos-1);
+         port = fixed(substr(url, pos+1));
+     end;
+   end split_url;
+
+   is_hostname: proc returns(bit(1));
      dcl letters char(52) init(
        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz');
-     return(length(host) ^=
-       length(translate(host, '', letters)));
+     return(index(translate(url, '', letters), ''));
    end is_hostname;
  end netdial;
 
@@ -216,7 +235,6 @@
    dcl c_host char(257);
    dcl rc fixed bin(31);
    dcl null_pos fixed bin(31);
-   dcl fam fixed bin(31);
 
    begin;
      c_host = substr(hostname, 1, length(hostname)) || '00'x;

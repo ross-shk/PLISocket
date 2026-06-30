@@ -33,7 +33,8 @@
  dcl netdial entry (
    like conncb,
    char(*) varying,
-   port_t
+   fixed bin(31),
+   fixed bin(31)
  );
 
  dcl netsend entry (
