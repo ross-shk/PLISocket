@@ -59,14 +59,6 @@
    fixed bin(31)   /* in-address */
  ) returns (fixed bin(31))  /* status */
    options(linkage(system)) external('bind_to_port');
- 
- dcl connect_to_ip entry (
-   fixed bin(31), /* ip (binary) */
-   port_t,        /* port */
-   sock_fd_t,        /* socket file descriptor */
-   fixed bin(31)  /* address family */
- ) returns(fixed bin(31))
-   options(linkage(system)) external('connect_to_ip');
 
  dcl connect entry (
    pointer,      /* host */

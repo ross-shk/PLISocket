@@ -37,19 +37,21 @@
 
  netconnect: proc(conn, ip, port);
    dcl conn like conncb;
-   dcl ip fixed bin(31);
+   dcl ip char(16) varying;
    dcl port port_t;
 
    begin;
      dcl status fixed bin(31);
+     dcl c_ip char(17);
 
-     status = connect_to_ip(ip, port, conn._fd, conn._family);
+     c_ip = trim(substr(ip, 1, length(ip))) || '00'x;
+     status = connect(addr(c_ip), port, conn._fd, conn._family);
      if status < 0 then do;
        signal condition(neterror) set oncode(get_errno());
        return;
      end;
    end;
-
+   
    conn._ip = ip;
    conn._port = port;
    conn._connected = '1'b;

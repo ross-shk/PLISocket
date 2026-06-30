@@ -18,14 +18,14 @@
  main: proc options(main);
  %include net;
 
-   dcl hostip     fixed bin(31);
+   dcl hostip     char(16) varying;
    dcl port       fixed bin(31);
    dcl request    char(2048) varying;
    dcl (bytes_sent, bytes_received) size_t;
    dcl response   char(2048);
    dcl conn like conncb;
 
-   hostip = make_ip(127, 0, 0, 1);  
+   hostip = '127.0.0.1';  
    port = 8080; 
    request =
        'GET / HTTP/1.1' || LINE_END ||
@@ -35,7 +35,6 @@
    
    call netnew(conn, AF.INET, TYPE.STREAM, 0);
    call netconnect(conn, hostip, port);
-   /* call netdial(conn, "localhost", port); */
    put skip list("       CONNECTED...");
 
    bytes_sent = netwrite(conn, request);
@@ -46,9 +45,4 @@
    put skip list(' >> response ', substr(response, 1, bytes_received));
 
    call netclose(conn); 
-
-   make_ip: proc(a, b, c, d) returns(fixed bin(31));
-     dcl (a, b, c, d) fixed bin(31);
-     return(isll(a, 24) | isll(b, 16) | isll(c, 8) | d);
-   end;
  end main;
