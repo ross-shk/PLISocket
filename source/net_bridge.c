@@ -85,7 +85,7 @@ int connect_to_ip(int ip, int port, int socket_fd, int af) {
   struct sockaddr_in addr = {0};
   addr.sin_family = af;
   addr.sin_port = htons(port);
-  addr.sin_addr.s_addr = ip;
+  addr.sin_addr.s_addr = htonl(ip);
 
   return connect(socket_fd, (struct sockaddr*)&addr, sizeof(addr)) ;
 }

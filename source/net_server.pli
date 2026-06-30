@@ -17,7 +17,7 @@
 
  net: package exports(netlisten, netaccept);
 
- %include netbridge;
+ %include net_bridge;
  %include neterrors;
 
  netlisten: proc(conn, port, backlog);
@@ -25,24 +25,24 @@
    dcl port    port_t;
    dcl backlog backlog_t;
 
-   if bind(sock._fd, port, sock._family, INADDR.ANY) < 0 then do;
-     signal condition(neterror) set oncode(get_errno());
-     return;
-   end;
+    if bind(conn._fd, port, conn._family, INADDR.ANY) < 0 then do;
+      signal condition(neterror) set oncode(get_errno());
+      return;
+    end;
 
-   if listen(sock._fd, backlog) < 0 then do;
-     signal condition(neterror) set oncode(get_errno());
-     return;
-   end;
+    if listen(conn._fd, backlog) < 0 then do;
+      signal condition(neterror) set oncode(get_errno());
+      return;
+    end;
 
-   sock._port = port;
-   sock._connected = '1'b;
+    conn._port = port;
+    conn._connected = '1'b;
  end netlisten;
 
  netaccept: proc(server, client) returns(fixed bin(31));
    dcl server like conncb;
    dcl client like conncb;
-   dcl client_fd conncb;
+   dcl client_fd sock_fd_t;
 
    client_fd = accept(server._fd);
    if client_fd < 0 then do;
@@ -50,8 +50,8 @@
      return;
    end;
 
-    client._fd = client_fd;
-    client._connected = '1'b;
+   client._fd = client_fd;
+   client._connected = '1'b;
  end netaccept;
 
  end net;
