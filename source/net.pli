@@ -76,7 +76,8 @@
        return;
      end;
    end;
-
+   
+   conn._host = host;
    conn._port = port;
    conn._connected = '1'b;
 
@@ -231,7 +232,7 @@
    null_pos = index(ip_buf, '00'x);
    if null_pos = 0 then null_pos = length(ip_buf) + 1;
 
-   conn._host = substr(ip_buf, 1, null_pos - 1);
+   conn._ip = substr(ip_buf, 1, null_pos - 1);
  end netresolve;
 
  end net;
