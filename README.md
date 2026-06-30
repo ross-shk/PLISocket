@@ -20,8 +20,8 @@ A socket library for PL/I with a C bridge, object-oriented wrappers, and PL/I co
  %include net;
  
    declare
-     request  char(2048) varying,
-     response char(2048),
+     request  char(1024) varying,
+     response char(1024),
      bytes    size_t,
      sock     like net_t;
 
