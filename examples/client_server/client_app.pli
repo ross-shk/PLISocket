@@ -21,7 +21,7 @@
    put skip list('Connecting to', trim(host), port);
 
    call netnew(conn, AF.INET, TYPE.STREAM, 0);
-   call netdial(conn, host, port);
+   call netconnect(conn, host, port);
    put skip list('Connected');
 
    bytes = netwrite(conn, request);
