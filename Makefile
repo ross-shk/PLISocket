@@ -51,7 +51,7 @@ $(DIST_PC): Makefile
 	echo 'Name: net' >> $@
 	echo 'Description: PL/I socket library with C bridge' >> $@
 	echo 'Version: 1.0.0' >> $@
-	echo 'Libs: -L$${libdir} -lnet -lprf $${altdir}/fhs.o $${altdir}/ghs.o' >> $@
+	echo 'Libs: $${altdir}/fhs.o $${altdir}/ghs.o -L$${libdir} -lnet -lprf' >> $@
 	echo 'Cflags: -i$${includedir}' >> $@
 
 test: libnet.a
