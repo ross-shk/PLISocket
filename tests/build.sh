@@ -41,16 +41,14 @@ echo "=== Building C bridge ==="
 gcc -m32 -c ../source/net_bridge.c -o net_bridge.o
 
 echo "=== Compiling library packages ==="
-plic -C -dELF -ew -O ../source/net.pli $INCDIR -o net.o
+plic -C -dELF ../source/net.pli $INCDIR -o net.o
 
 echo "=== Compiling $SOURCE ==="
-plic -C -dELF -ew -O "$SOURCE" $INCDIR -o "${OUTPUT}.o"
+plic -C -dELF "$SOURCE" $INCDIR -o "${OUTPUT}.o"
 
 echo "=== Linking $OUTPUT ==="
-gcc -m32 -no-pie -z muldefs -Wl,-M -Wl,--oformat=elf32-i386 \
-  -static-libgcc \
+gcc -m32 -no-pie -z muldefs \
   -o "$OUTPUT" "${OUTPUT}.o" net_bridge.o net.o \
-  ${ALT_DIR}/fhs.o ${ALT_DIR}/ghs.o \
-  -lprf > "${OUTPUT}.map"
+  ${ALT_DIR}/fhs.o ${ALT_DIR}/ghs.o -lprf 
 
 echo "=== Build complete: $OUTPUT ==="
