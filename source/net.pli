@@ -116,22 +116,13 @@
    dcl bytes_sent fixed bin(31) init(0);
 
    begin;
-     dcl n size_t;
      dcl slice char(length(request));
-
      slice = request;
-
-     do while(bytes_sent < length(request));
-       n = send(conn._fd, addr(slice) + bytes_sent,
-                   length(request) - bytes_sent, flags);
-       if n <= 0 then leave;
-       bytes_sent = bytes_sent + n;
-     end;
+     bytes_sent = send(conn._fd, addr(slice), length(request), flags);
    end;
 
    if bytes_sent < 0 then do;
      signal condition(neterror) set oncode(get_errno());
-     return(bytes_sent);
    end;
    return(bytes_sent);
  end netsend;
