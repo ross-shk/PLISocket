@@ -37,12 +37,12 @@
 
  netconnect: proc(conn, ip, port);
    dcl conn like conncb;
-   dcl ip char(16) varying;
+   dcl ip char(*) varying;
    dcl port port_t;
 
    begin;
      dcl status fixed bin(31);
-     dcl c_ip char(17);
+     dcl c_ip char(257);
 
      c_ip = trim(substr(ip, 1, length(ip))) || '00'x;
      status = connect(addr(c_ip), port, conn._fd, conn._family);
@@ -52,7 +52,7 @@
      end;
    end;
    
-   conn._ip = ip;
+   conn._host = ip;
    conn._port = port;
    conn._connected = '1'b;
  end netconnect;
@@ -61,37 +61,25 @@
    dcl conn like conncb;
    dcl url char(*) varying;
    dcl family fixed bin(31);
-   dcl type fixed bin(31);
    
    dcl host char(256) varying;
    dcl port port_t;
    call split_url;
 
    call netnew(conn, family, TYPE.STREAM, 0);
-   if is_hostname then call netresolve(conn, host);
-
-   begin;
-     dcl status fixed bin(31);
-     dcl c_host char(256);
-     c_host = trim(substr(host, 1, length(host))) || '00'x;
-
-     status = connect(addr(c_host), port, conn._fd, conn._family);
-     if status < 0 then do;
-       signal condition(neterror) set oncode(get_errno());
-       return;
-     end;
+   if is_hostname then do;
+     call netresolve(conn, host);
+     call netconnect(conn, conn._host, port);
    end;
-   
-   conn._host = host;
-   conn._port = port;
-   conn._connected = '1'b;
-   
+   else
+     call netconnect(conn, host, port);
+
    split_url: proc;
      dcl pos fixed bin(31);
      pos = index(url, ':');
 
      if pos = 0 then do;
-       signal condition(neterror) set oncode(61); /* ECONNREFUSED */
+       signal condition(neterror) set oncode(61);
        return;
      end;
      else do;
