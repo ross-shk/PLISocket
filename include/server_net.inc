@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
- %include net;
-
  dcl netlisten entry (
    like conncb,
    port_t,
