@@ -1,4 +1,4 @@
-# libnet
+# PL/I Networking Library
 
 A socket library for PL/I with a C bridge, object-oriented wrappers, and PL/I condition-based error handling.
 
