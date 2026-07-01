@@ -73,7 +73,6 @@
    begin;
      dcl status fixed bin(31);
      dcl c_host char(256);
-
      c_host = trim(substr(host, 1, length(host))) || '00'x;
 
      status = connect(addr(c_host), port, conn._fd, conn._family);
@@ -92,12 +91,12 @@
      pos = index(url, ':');
 
      if pos = 0 then do;
-         host = url;
-         port = '';
+       signal condition(neterror) set oncode(61); /* ECONNREFUSED */
+       return;
      end;
      else do;
-         host = substr(url, 1, pos-1);
-         port = fixed(substr(url, pos+1));
+       host = substr(url, 1, pos-1);
+       port = fixed(substr(url, pos+1));
      end;
    end;
 
