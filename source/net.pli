@@ -15,7 +15,7 @@
  */
 
  net: package exports(netconnect, netdial, netsend, netreceive,
-   netread, netreadall, netwrite, netclose, netshutdown, 
+   netread, netreadall, netwrite, netwriteall, netclose, netshutdown, 
    netnew, netresolve);
 
  %include net_bridge;
@@ -154,7 +154,7 @@
    return(bytes_received);
  end netreceive; 
 
- netwrite: proc(conn, buffer) returns(size_t);
+ netwriteall: proc(conn, buffer) returns(size_t);
    dcl conn like conncb;
    dcl buffer char(*) varying;
 
@@ -179,6 +179,23 @@
       return(bytes_written);
     end;
    return(bytes_written);
+ end netwriteall;
+
+ netwrite: proc(conn, buffer) returns(size_t);
+   dcl conn like conncb;
+   dcl buffer char(*) varying;
+
+   declare n size_t;
+   dcl slice char(length(buffer));
+
+   slice = buffer;
+   n = write(conn._fd, addr(slice), length(buffer));
+
+   if n < 0 then do;
+     signal condition(neterror) set oncode(get_errno());
+     return(n);
+   end;
+   return(n);
  end netwrite;
 
  netread: proc(conn, buffer) returns(size_t);

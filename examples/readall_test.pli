@@ -34,7 +34,7 @@
    call netdial(conn, host, AF.INET);
    put skip list("       CONNECTED...");
 
-   bytes_sent = netwrite(conn, request);
+   bytes_sent = netwriteall(conn, request);
    put skip list(' >> bytes sent ', '' || trim(char(bytes_sent)));
 
    bytes_received = netreadall(conn, response);

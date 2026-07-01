@@ -42,7 +42,12 @@
    flags_t
  ) returns(size_t);
 
- dcl netwrite entry (
+  dcl netwrite entry (
+    like conncb,
+    char(*) varying
+  ) returns(size_t);
+
+ dcl netwriteall entry (
    like conncb,
    char(*) varying
  ) returns(size_t);
