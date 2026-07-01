@@ -6,13 +6,13 @@
    dcl hostname char(256) varying init('www.example.com');
 
    on condition(neterror) begin;
-     put skip list('Resolution failed, errno =', oncode());
+     display('Resolution failed, errno =' || oncode());
      stop;
    end;
 
    call netnew(conn, AF.INET, TYPE.STREAM, 0);
    call netresolve(conn, hostname);
 
-   put skip list('Resolved', trim(conn._host), 'to', trim(conn._ip));
+   display('Resolved ' || trim(conn._host) || ' to ' || trim(conn._ip));
 
  end;
