@@ -37,9 +37,6 @@ SOURCE="$1"
 OUTPUT="${2:-$(basename "$SOURCE" .pli)}"
 INCDIR="-i../include"
 
-echo "=== Building C bridge ==="
-gcc -m32 -c ../source/net_bridge.c -o net_bridge.o
-
 echo "=== Compiling $SOURCE ==="
 plic -C -dELF -ew "$SOURCE" $(pkg-config --cflags net) -o "${OUTPUT}.o"
 
