@@ -28,7 +28,7 @@ A basic networking library for PL/I
 
    on condition(neterror) begin;
      display('Networking error, code = ' || oncode());
-     goto cleanup;
+     goto done;
    end;
 
    request =
@@ -43,7 +43,7 @@ A basic networking library for PL/I
 
    display('Response ' || substr(response, 1, bytes));
  
- cleanup:
+ done:
    call netclose(conn); 
  end;
 ```

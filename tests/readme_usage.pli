@@ -27,7 +27,7 @@
 
    on condition(neterror) begin;
      display('Networking error, code = ' || oncode());
-     goto cleanup;
+     goto done;
    end;
 
    request =
@@ -42,6 +42,6 @@
 
    display('Response ' || substr(response, 1, bytes));
  
- cleanup:
+ done:
    call netclose(conn); 
  end;
